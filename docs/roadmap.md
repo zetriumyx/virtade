@@ -65,6 +65,8 @@ P0 已验收。P1/P2/P3 的主体实现已落地；P1 的真实账号修改任�
 
 ## 尚需推进的门禁（按依赖排序）
 
+接手 Agent 先读根目录 [HANDOFF.md](../HANDOFF.md) 和 [AGENTS.md](../AGENTS.md)。首轮远端 CI 三平台桌面构建已通过，但 Windows core 有一项回归失败；优先修复并记录根因与新 CI，再推进下列阶段门禁。最新任务入口和完成标准统一维护在 HANDOFF.md。
+
 1. 完成 UI 扩展的独立执行及故障恢复门禁；iframe sandbox 仅作为权限边界，不能替代 CPU / 内存故障隔离。
 2. 用户原生 Agent 的有效认证到位后执行真实修改/取消/恢复；Codex 当前原生 unauthorized 不应由宿主绕过。
 3. 在真实 Windows / macOS 或远端 CI 执行现有构建与合同测试，修复平台差异，再做桌面交互验收。

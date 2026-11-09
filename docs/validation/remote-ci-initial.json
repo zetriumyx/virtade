@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "head_sha": "0d0afd7bbf3a9a08af248c8608dcd82b3d9f41d0",
+  "run_url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814",
+  "status": "completed",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "name": "core (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814/job/129009147319",
+      "failed_steps": []
+    },
+    {
+      "name": "core (windows-latest)",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814/job/129009147490",
+      "failed_steps": [
+        "Run cargo test --workspace --all-targets --locked"
+      ]
+    },
+    {
+      "name": "desktop (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814/job/129009147513",
+      "failed_steps": []
+    },
+    {
+      "name": "web",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814/job/129009147514",
+      "failed_steps": []
+    },
+    {
+      "name": "desktop (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814/job/129009147533",
+      "failed_steps": []
+    },
+    {
+      "name": "core (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814/job/129009147575",
+      "failed_steps": []
+    },
+    {
+      "name": "desktop (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/zetriumyx/virtade/actions/runs/42571331814/job/129009147592",
+      "failed_steps": []
+    }
+  ],
+  "observed_failure": {
+    "job": "core (windows-latest)",
+    "test": "third_party_provider_is_discovered_without_core_registration_and_cannot_forge_identity",
+    "location": "crates/desktop-host/tests/contributed.rs:95",
+    "actual": "Null",
+    "expected": "hello.provider",
+    "root_cause_confirmed": false
+  }
+}

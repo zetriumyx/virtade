@@ -3,6 +3,9 @@
 以 **virt** Rust 插件内核构建的跨平台 Agent Development Environment。项目自有代码采用 MIT。当前已实现插件内核、Wasmtime/WIT 隔离插件、TypeScript UI SDK、Tauri/React 工作台，以及 Claude Code、Codex、DeepSeek Harness 的原生协议适配。包含 Chat、SQLite 会话恢复、Monaco、PTY 终端、Git/worktree、插件管理与多会话并行。
 
 **实现不等于全部验收完成**：Linux 原生 WebView/IPC 冒烟、Rust 合同测试和浏览器回归已通过；真实 Codex 代码任务因原生登录失效而失败，Claude/DSH 真实任务及 Windows/macOS 交互仍待对应环境验证，UI 插件的 CPU/内存故障隔离仍需补齐。详见[验收记录](docs/acceptance.md)。
+
+- **[Agent 接手入口 / 后续开发计划](HANDOFF.md)**
+- **[仓库开发规范](AGENTS.md)**
 - [架构设计与组件调研](docs/architecture.md)
 - [分阶段任务与验收标准](docs/roadmap.md)
 - [P0 验证记录与边界](docs/p0-validation.md)

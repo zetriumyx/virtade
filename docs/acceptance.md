@@ -21,9 +21,15 @@
 ## 仍需实际验收
 
 1. **真实 Agent 改代码门禁未通过**。已尝试使用本机 Codex 0.167.0-alpha.4 对一次性 Python 测试项目提交真实修改任务，收到原生 `unauthorized`：登录状态无法刷新，任务以 Failed 持久化。没有把错误标成成功，也没有替换 Harness 或跳过认证。需要有效的原生 Codex 登录后重试。Claude 与 DSH 同样需要用户已配置的原生认证/程序；当前没有真实修改成功证据。
-2. Windows / macOS 桌面操作、ConPTY、打包与双 Agent 真实修改任务尚未在对应系统执行。已配置三平台 CI 构建与合同测试，未连接远端仓库执行，不能宣称三平台验收完成。
+2. Windows / macOS 桌面交互、ConPTY 实际操作、安装分发与双 Agent 真实修改任务仍待验收。首轮远端 CI 已完成：三平台 Tauri 构建、Linux/macOS 核心测试及 Web 通过；Windows 核心测试在外部 Provider 集成测试失败，整体 CI 尚未通过。见下方远端记录。
 3. **UI CPU/内存故障隔离仍未完成**。opaque iframe 限制访问权限，不能保证恶意 UI JavaScript 不阻塞 WebView；独立 UI 进程、故障监督及恢复仍是 P2 完整门禁。WASM 逻辑组件的 fuel/epoch/内存与异常隔离已有测试。
 4. 公共 SDK 0.1 属于实验版。编辑器扩展目前为隔离独立视图，不提供主进程 Monaco 任意脚本或完整 LSP API；状态贡献为静态文本。自动更新、插件市场、云端 Agent 和远程工作区不在初期范围。
 5. 用户分发仍需完成 Claude bridge/Node 打包或安装自动化、第三方许可文本收集和安装包签名；当前可构建原生可执行程序，不宣称可签名发布。性能基线仅覆盖本地核心路径，尚无三平台持续性能回归门槛。
 
 下一次真实验收应在测试仓库中：让 Codex 与 Claude 分别修复同一类失败测试，确认磁盘 diff 和仓库测试；取消长任务；退出并恢复同一原生会话；并行任务使用不同 worktree；保存脱敏版本、结果与平台信息。无有效凭据时保留失败状态，禁止自动重提任务。
+
+## 首轮 GitHub CI 更新
+
+2026-11-09，初始提交 `0d0afd7bbf3a9a08af248c8608dcd82b3d9f41d0` 的 [workflow](https://github.com/zetriumyx/virtade/actions/runs/42571331814) 已结束，结论为 failure。三个 desktop job、Linux/macOS core 和 web job 通过；Windows core 在 `crates/desktop-host/tests/contributed.rs:95` 的 Provider 身份断言得到 Null，预期 hello.provider。疑似 History 分别读取 events/tasks 形成非一致快照，尚需重现确认，不能将推测视作根因。具体接手任务见 [HANDOFF.md](../HANDOFF.md)，机器可读证据见 [remote-ci-initial.json](validation/remote-ci-initial.json)。
+
+`linux-summary.json` 保留上传前本地验证时的历史状态；其 remote_ci_executed=false 不表示当前从未运行远端 CI。构建通过不代替目标平台交互或真实模型任务验收。
