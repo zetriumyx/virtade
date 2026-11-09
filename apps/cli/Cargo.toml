@@ -1,0 +1,31 @@
+[package]
+name = "virtade-cli"
+default-run = "virtade"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "virtade"
+path = "src/main.rs"
+
+[dependencies]
+virtade-agent-core.workspace = true
+virtade-agent-codex.workspace = true
+virtade-agent-claude.workspace = true
+virtade-storage.workspace = true
+virtade-workspace.workspace = true
+uuid.workspace = true
+tokio.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[[bin]]
+name = "virtade-cli-fixture"
+path = "../../crates/agent-core/tests/fixtures/process.rs"
+
+[[bin]]
+name = "virtade-cli-claude-fixture"
+path = "../../plugins/agent-claude/tests/fixtures/process.rs"

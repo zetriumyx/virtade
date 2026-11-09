@@ -1,0 +1,21 @@
+package virt:plugin@0.1.0;
+
+interface host {
+    service-register: func(name: string, major: u32, replaceable: bool, replace: bool) -> result<_, string>;
+    service-call: func(name: string, major: u32, request: string) -> result<string, string>;
+    event-subscribe: func(topic: string, priority: s32) -> result<_, string>;
+    event-emit: func(topic: string, payload: string) -> result<_, string>;
+    contribute: func(definition: string) -> result<_, string>;
+    config-get: func(key: string) -> result<option<string>, string>;
+    config-set: func(key: string, value: string) -> result<_, string>;
+    log: func(message: string);
+    resource-request: func(request: string) -> result<string, string>;
+}
+
+world plugin {
+    import host;
+    export activate: func() -> result<_, string>;
+    export deactivate: func() -> result<_, string>;
+    export service: func(name: string, request: string) -> result<string, string>;
+    export event: func(topic: string, payload: string) -> result<bool, string>;
+}

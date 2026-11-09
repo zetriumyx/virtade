@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "React workbench rendered",
+    "native SQLite host snapshot",
+    "virt built-in panels registered",
+    "IPC without host nonce rejected",
+    "typed IPC persistence round trip",
+    "structured diagnostics exclude private settings",
+    "native WebView interactive theme",
+    "external top-level navigation rejected"
+  ],
+  "ok": true,
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/60.5 Safari/605.1.15"
+}

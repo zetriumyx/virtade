@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "virtade",
+  "version": "0.1.0",
+  "identifier": "org.virtade.desktop",
+  "build": {"beforeDevCommand":"pnpm dev", "devUrl":"http://localhost:1420", "beforeBuildCommand":"pnpm build", "frontendDist":"../dist", "features":["desktop"]},
+  "app": {
+    "windows": [{"label":"main","title":"virtade","width":1440,"height":920,"minWidth":960,"minHeight":640}],
+    "security": {"csp":"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src ipc: http://ipc.localhost; worker-src 'self' blob:; frame-src 'self' blob:; object-src 'none'; base-uri 'none'"}
+  },
+  "bundle":{"active":false}
+}

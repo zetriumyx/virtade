@@ -1,0 +1,20 @@
+[package]
+name = "virtade-desktop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[features]
+default = []
+desktop = ["dep:tauri", "dep:tauri-build"]
+native-smoke = ["desktop"]
+custom-protocol = ["desktop", "tauri/custom-protocol"]
+
+[dependencies]
+virtade-desktop-host.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+tauri = { version = "2.12", optional = true }
+
+[build-dependencies]
+tauri-build = { version = "2", optional = true }

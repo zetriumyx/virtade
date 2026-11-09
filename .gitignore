@@ -1,0 +1,16 @@
+/target/
+**/target/
+**/test-results/
+**/playwright-report/
+node_modules/
+*.log
+**/dist/
+*.db
+*.db-wal
+*.db-shm
+*.db.lock
+.env
+.env.*
+!.env.example
+/artifacts/
+/apps/desktop/src-tauri/gen/

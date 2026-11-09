@@ -1,0 +1,1 @@
+{"name":"@virtade/plugin-sdk","version":"0.1.0","private":true,"type":"module","exports":{".":{"types":"./dist/index.d.ts","import":"./dist/index.js"}},"scripts":{"check":"tsc --noEmit","build":"tsc","test":"node --test tests/*.test.mjs"},"devDependencies":{"typescript":"7.0.2","@types/node":"24.10.1"}}

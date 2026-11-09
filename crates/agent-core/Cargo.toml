@@ -1,0 +1,20 @@
+[package]
+name = "virtade-agent-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+process-wrap.workspace = true
+virt.workspace = true
+virt-protocol.workspace = true
+
+[[bin]]
+name = "protocol-fixture"
+path = "tests/fixtures/process.rs"

@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "virt plugin manifest 0.1",
+  "description": "Structural authoring aid. The Rust host additionally validates SemVer, dependency graph, package identity, quotas and explicit grants.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "api",
+    "dependencies",
+    "permissions"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_.-]+$"
+    },
+    "version": {
+      "type": "string"
+    },
+    "api": {
+      "type": "string"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "service_provide"
+              },
+              "target": {
+                "$ref": "#/$defs/service"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "service_call"
+              },
+              "target": {
+                "$ref": "#/$defs/service"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "service_replace"
+              },
+              "target": {
+                "$ref": "#/$defs/service"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "event_subscribe"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "event_publish"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "contribution"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "filesystem_read"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "filesystem_write"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "network_origin"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "process_command"
+              },
+              "target": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "const": "config_read"
+              }
+            },
+            "not": {
+              "required": [
+                "target"
+              ]
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "const": "config_write"
+              }
+            },
+            "not": {
+              "required": [
+                "target"
+              ]
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "kind",
+              "target"
+            ],
+            "properties": {
+              "kind": {
+                "const": "agent_control"
+              },
+              "target": {
+                "type": "object",
+                "required": [
+                  "provider",
+                  "root"
+                ],
+                "properties": {
+                  "provider": {
+                    "type": "string"
+                  },
+                  "root": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "service": {
+      "type": "object",
+      "required": [
+        "name",
+        "major"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "major": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      }
+    }
+  }
+}

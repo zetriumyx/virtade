@@ -1,0 +1,19 @@
+[package]
+name = "virtade-agent-dsh"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+virtade-agent-core.workspace = true
+async-trait.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[[bin]]
+name = "dsh-protocol-fixture"
+path = "tests/fixtures/process.rs"

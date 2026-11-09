@@ -1,0 +1,25 @@
+[package]
+name = "virt-hello"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[workspace]
+
+[features]
+test-probes = []
+test-provider = ["dep:serde_json"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wit-bindgen = { version = "=0.57.1", default-features = false, features = ["macros", "realloc"] }
+dlmalloc = { version = "0.2", features = ["global"] }
+
+serde_json = {version="1",default-features=false,features=["alloc"],optional=true}
+
+[profile.release]
+panic = "abort"
+opt-level = "s"
+strip = true

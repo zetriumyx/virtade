@@ -1,0 +1,8 @@
+import{readFile,writeFile}from'node:fs/promises';
+const sdk=await readFile(new URL('../../packages/plugin-sdk/dist/index.js',import.meta.url),'utf8');
+const html=`<html lang="en"><meta charset="utf-8"><style>body{font:14px system-ui;background:#14181b;color:#dce6e0;padding:30px;line-height:1.8}h1{font-size:24px;font-weight:500}p{color:#8ca096}button{background:#8de1bf;color:#14251d;border:0;border-radius:5px;padding:10px 15px;cursor:pointer}textarea{display:block;width:90%;height:80px;margin:18px 0;background:#101315;color:#dce6e0;border:1px solid #35443b;border-radius:6px;padding:12px}pre{white-space:pre-wrap;color:#8de1bf}</style><h1>Hello from a third-party plugin</h1><p>This view runs in an isolated frame. Its service runs in a Wasmtime component.</p><textarea id="input" aria-label="Message">Hello, virtade!</textarea><button id="send">Call WASM service</button><pre id="result">Connecting to the extension host…</pre><p id="events">Agent events received: 0</p><script type="module">${sdk}
+const context=await connectVirt();document.getElementById('result').textContent='Connected as '+context.pluginId;
+document.getElementById('send').onclick=async()=>{try{const value=await context.services.call({name:'hello.greeting',major:1},{message:document.getElementById('input').value});document.getElementById('result').textContent=JSON.stringify(value,null,2);}catch(error){document.getElementById('result').textContent=error.message;}};
+let events=0;await context.on('virtade.agent.codex.event.v1',()=>{document.getElementById('events').textContent='Agent events received: '+(++events);});
+</script></html>`;
+await writeFile(new URL('./ui.html',import.meta.url),html);

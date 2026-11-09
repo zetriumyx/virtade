@@ -1,0 +1,9 @@
+{
+  "id":"hello","version":"0.1.0","api":"=0.1.0","dependencies":[],
+  "permissions":[
+    {"kind":"service_provide","target":{"name":"hello.greeting","major":1}},
+    {"kind":"service_call","target":{"name":"hello.greeting","major":1}},
+    {"kind":"event_subscribe","target":"virtade.agent.codex.event.v1"},
+    {"kind":"contribution","target":"panel"}
+  ]
+}

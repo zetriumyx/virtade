@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-09T05:47:34.846844+00:00",
+  "platform": "linux-x86_64",
+  "rust_tests_passed": 90,
+  "node_tests_passed": 5,
+  "browser_tests_passed": 6,
+  "native_smoke_checks_passed": 8,
+  "checks": [
+    "cargo fmt --all --check",
+    "cargo clippy --workspace --all-targets --locked -- -D warnings",
+    "pnpm format:check",
+    "pnpm check",
+    "pnpm build"
+  ],
+  "native_production_build": true,
+  "remote_ci_executed": false,
+  "real_agent_code_modification_accepted": false,
+  "ui_cpu_memory_fault_isolation_complete": false
+}

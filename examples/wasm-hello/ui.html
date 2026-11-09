@@ -1,0 +1,166 @@
+<html lang="en"><meta charset="utf-8"><style>body{font:14px system-ui;background:#14181b;color:#dce6e0;padding:30px;line-height:1.8}h1{font-size:24px;font-weight:500}p{color:#8ca096}button{background:#8de1bf;color:#14251d;border:0;border-radius:5px;padding:10px 15px;cursor:pointer}textarea{display:block;width:90%;height:80px;margin:18px 0;background:#101315;color:#dce6e0;border:1px solid #35443b;border-radius:6px;padding:12px}pre{white-space:pre-wrap;color:#8de1bf}</style><h1>Hello from a third-party plugin</h1><p>This view runs in an isolated frame. Its service runs in a Wasmtime component.</p><textarea id="input" aria-label="Message">Hello, virtade!</textarea><button id="send">Call WASM service</button><pre id="result">Connecting to the extension host…</pre><p id="events">Agent events received: 0</p><script type="module">export async function connectVirt(timeout = 10_000) {
+    if (window.parent === window)
+        throw new Error('virt UI SDK requires the isolated extension host');
+    const init = await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+            window.removeEventListener('message', listener);
+            reject(new Error('extension host handshake timed out'));
+        }, timeout);
+        function listener(event) {
+            if (event.source !== window.parent ||
+                event.data?.type !== 'virt:init' ||
+                event.data?.apiVersion !== 1 ||
+                !event.ports[0])
+                return;
+            clearTimeout(timer);
+            window.removeEventListener('message', listener);
+            resolve({
+                port: event.ports[0],
+                pluginId: String(event.data.pluginId),
+                viewId: String(event.data.viewId ?? ''),
+                input: event.data.input ?? null,
+            });
+        }
+        window.addEventListener('message', listener);
+        window.parent.postMessage({ type: 'virt:ready', apiVersion: 1 }, '*');
+    });
+    let next = 0, closed = false, cursor = 0, dropped = 0;
+    const pending = new Map();
+    const listeners = new Map();
+    init.port.onmessage = (event) => {
+        const value = event.data;
+        if (value?.type !== 'virt:response' || !Number.isSafeInteger(value.id))
+            return;
+        const request = pending.get(value.id);
+        if (!request)
+            return;
+        pending.delete(value.id);
+        clearTimeout(request.timer);
+        if (value.error)
+            request.reject(new Error(String(value.error)));
+        else
+            request.resolve(value.result);
+    };
+    init.port.start();
+    const request = (method, params) => new Promise((resolve, reject) => {
+        if (closed) {
+            reject(new Error('plugin context disposed'));
+            return;
+        }
+        const id = ++next;
+        const payload = { type: 'virt:request', id, request: { method, params } };
+        if (JSON.stringify(payload).length > 1024 * 1024 || pending.size >= 128) {
+            reject(new Error('plugin request quota exceeded'));
+            return;
+        }
+        const timer = setTimeout(() => {
+            pending.delete(id);
+            reject(new Error('host request timed out; outcome may be unknown'));
+        }, 5000);
+        pending.set(id, { resolve, reject, timer });
+        init.port.postMessage(payload);
+    });
+    const resource = (payload) => request('resource', { request: payload });
+    let polling = false;
+    const poll = setInterval(async () => {
+        if (polling || !listeners.size || closed)
+            return;
+        polling = true;
+        try {
+            const result = await request('event_poll', { after: cursor });
+            if (result.dropped > dropped) {
+                console.warn('virt event queue dropped events', result.dropped - dropped);
+                dropped = result.dropped;
+            }
+            for (const event of result.events) {
+                cursor = Math.max(cursor, event.sequence);
+                for (const listener of listeners.get(event.topic) ?? []) {
+                    try {
+                        listener(event.payload);
+                    }
+                    catch (error) {
+                        console.error('virt plugin listener failed', error);
+                    }
+                }
+            }
+        }
+        catch (error) {
+            console.error('virt event subscription failed', error);
+        }
+        finally {
+            polling = false;
+        }
+    }, 250);
+    return {
+        pluginId: init.pluginId,
+        viewId: init.viewId,
+        input: init.input,
+        services: { call: (key, payload) => request('service_call', { key, request: payload }) },
+        config: {
+            get: (key) => request('config_get', { key }),
+            set: (key, value) => request('config_set', { key, value }),
+        },
+        resources: { request: resource },
+        rpc: {
+            open: (config) => resource({ operation: 'rpc_open', params: config }),
+            start: (id, method, params, timeout_ms = 120_000) => resource({ operation: 'rpc_start', params: { id, method, params, timeout_ms } }),
+            notify: (id, method, params) => resource({ operation: 'rpc_notify', params: { id, method, params } }),
+            respond: (id, request_id, response) => resource({ operation: 'rpc_respond', params: { id, request_id, ...response } }),
+            poll: (id, after = 0) => resource({ operation: 'rpc_poll', params: { id, after } }),
+            close: (id) => resource({ operation: 'rpc_close', params: { id } }),
+        },
+        agents: {
+            providers: () => request('service_call', {
+                key: { name: 'virtade.agents', major: 1 },
+                request: { method: 'providers' },
+            }),
+            openSession: (provider, root, resume) => request('service_call', {
+                key: { name: 'virtade.agents', major: 1 },
+                request: { method: 'open_session', params: { provider, root, resume: resume ?? null } },
+            }),
+            submit: (session_id, text, request_key = crypto.randomUUID()) => request('service_call', {
+                key: { name: 'virtade.agents', major: 1 },
+                request: { method: 'submit', params: { session_id, text, request_key } },
+            }),
+            cancel: (session_id) => request('service_call', {
+                key: { name: 'virtade.agents', major: 1 },
+                request: { method: 'cancel', params: { session_id } },
+            }),
+            history: (session_id, after = 0, limit = 100) => request('service_call', {
+                key: { name: 'virtade.agents', major: 1 },
+                request: { method: 'history', params: { session_id, after, limit } },
+            }),
+        },
+        contribute: (definition) => request('contribute', { definition }),
+        on: async (topic, listener) => {
+            await request('event_subscribe', { topic });
+            let set = listeners.get(topic);
+            if (!set) {
+                set = new Set();
+                listeners.set(topic, set);
+            }
+            set.add(listener);
+            return () => {
+                set.delete(listener);
+                if (!set.size)
+                    listeners.delete(topic);
+            };
+        },
+        dispose: () => {
+            closed = true;
+            clearInterval(poll);
+            init.port.close();
+            for (const value of pending.values()) {
+                clearTimeout(value.timer);
+                value.reject(new Error('plugin context disposed'));
+            }
+            pending.clear();
+            listeners.clear();
+        },
+    };
+}
+
+const context=await connectVirt();document.getElementById('result').textContent='Connected as '+context.pluginId;
+document.getElementById('send').onclick=async()=>{try{const value=await context.services.call({name:'hello.greeting',major:1},{message:document.getElementById('input').value});document.getElementById('result').textContent=JSON.stringify(value,null,2);}catch(error){document.getElementById('result').textContent=error.message;}};
+let events=0;await context.on('virtade.agent.codex.event.v1',()=>{document.getElementById('events').textContent='Agent events received: '+(++events);});
+</script></html>

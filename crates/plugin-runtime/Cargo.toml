@@ -1,0 +1,45 @@
+[package]
+name = "virtade-plugin-runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+virt.workspace = true
+virt-protocol.workspace = true
+virtade-storage.workspace = true
+virtade-agent-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+async-trait.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+semver.workspace = true
+wasmtime = { version = "=50.0.0", default-features = false, features = ["async", "component-model", "cranelift", "runtime", "std", "wat"] }
+anyhow = "1"
+sha2 = "0.10"
+uuid.workspace = true
+cap-std = "4.0.3"
+process-wrap.workspace = true
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls-native-roots", "stream"] }
+
+[dev-dependencies]
+tempfile.workspace = true
+wit-component = { version = "0.263", features = ["dummy-module"] }
+wit-parser = "0.263"
+
+[[bin]]
+name = "virt-componentize"
+path = "src/componentize.rs"
+required-features = ["tooling"]
+
+[[bin]]
+name = "rpc-broker-fixture"
+path = "tests/fixtures/rpc.rs"
+
+[features]
+tooling = ["dep:wit-component"]
+
+[dependencies.wit-component]
+version = "0.263"
+optional = true

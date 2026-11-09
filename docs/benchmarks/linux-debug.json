@@ -1,0 +1,1 @@
+{"arch":"x86_64","ordered_event_one_listener":{"iterations":10000,"median_ns":34182,"p95_ns":59400,"p99_ns":127903},"os":"linux","profile":"use cargo run --release for comparable optimized results","schema_version":1,"service":{"iterations":10000,"median_ns":36155,"p95_ns":62424,"p99_ns":110637},"shutdown_ns":109044,"startup_ns":152250}

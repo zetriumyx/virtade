@@ -1,0 +1,40 @@
+[workspace]
+members = ["crates/protocol", "crates/virt", "crates/agent-core", "crates/storage", "crates/workspace", "plugins/agent-codex", "plugins/agent-claude", "plugins/agent-dsh", "apps/cli", "crates/desktop-host", "crates/plugin-runtime", "apps/desktop/src-tauri"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+virt-protocol = { path = "crates/protocol" }
+virt = { path = "crates/virt" }
+virtade-agent-core = { path = "crates/agent-core" }
+virtade-agent-codex = { path = "plugins/agent-codex" }
+virtade-agent-claude = { path = "plugins/agent-claude" }
+virtade-agent-dsh = { path = "plugins/agent-dsh" }
+virtade-storage = { path = "crates/storage" }
+virtade-workspace = { path = "crates/workspace" }
+virtade-desktop-host = { path = "crates/desktop-host" }
+virtade-plugin-runtime = { path = "crates/plugin-runtime" }
+async-trait = "0.1"
+futures-util = "0.3"
+semver = { version = "1", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "process", "io-util", "signal"] }
+tokio-util = { version = "0.7", features = ["rt"] }
+process-wrap = { version = "10.0.1", features = ["tokio1"] }
+uuid = { version = "1", features = ["v4"] }
+rusqlite = { version = "0.41.1", features = ["bundled"] }
+tempfile = "3"
+
+[profile.dev]
+debug = 0
+incremental = false
+
+[profile.test]
+debug = 0
+incremental = false

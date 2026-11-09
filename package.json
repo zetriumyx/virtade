@@ -1,0 +1,16 @@
+{
+  "name": "virtade",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "check": "pnpm -r check",
+    "build": "pnpm -r build && node examples/wasm-hello/build-ui.mjs",
+    "test": "pnpm -r test",
+    "format": "prettier --write apps/desktop/src apps/desktop/tests packages/plugin-sdk/src packages/claude-bridge/src",
+    "format:check": "prettier --check apps/desktop/src apps/desktop/tests packages/plugin-sdk/src packages/claude-bridge/src"
+  },
+  "devDependencies": {
+    "prettier": "3.8.2"
+  }
+}
